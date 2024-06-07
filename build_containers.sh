@@ -4,8 +4,6 @@
 #SBATCH --mem=100G
 #SBATCH --gres=tmpspace:100G
 
-name="wf-human-variation"
-
 # Tags from nextflow.config
 e2l_base_tag="sha2b856c1f358ddf1576217a336bc0e9864b6dc0ed"
 e2l_snp_tag="sha17e686336bf6305f9c90b36bc52ff9dd1fa73ee9"
@@ -21,8 +19,8 @@ common_sha="sha338caea0a2532dc0ea8f46638ccc322bb8f9af48"
 cd /hpc/diaggen/software/singularity_cache
 
 # Pulling the containers
-echo "# Pulling ontresearch-${name}-${e2l_base_tag}.img"
-singularity pull --disable-cache --name ontresearch-${name}-${e2l_base_tag}.img docker://ontresearch/${name}:${e2l_base_tag}
+echo "# Pulling ontresearch-wf-human-variation-${e2l_base_tag}.img"
+singularity pull --disable-cache --name ontresearch-wf-human-variation-${e2l_base_tag}.img docker://ontresearch/wf-human-variation:${e2l_base_tag}
 echo "# Pulling ontresearch-wf-human-variation-snp-${e2l_snp_tag}.img"
 singularity pull --disable-cache --name ontresearch-wf-human-variation-snp-${e2l_snp_tag}.img docker://ontresearch/wf-human-variation-snp:${e2l_snp_tag}
 echo "# Pulling ontresearch-wf-human-variation-sv-${e2l_sv_tag}.img"
