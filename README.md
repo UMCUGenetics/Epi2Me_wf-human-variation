@@ -19,8 +19,8 @@ Modify the following sbatch script to run the wf-human-variation workflow on the
 
 export NXF_JAVA_HOME='/hpc/diaggen/software/tools/jdk-18.0.2.1/'
 
-nextflow run </path/to/>wf-human-variation \
-    -c </path/to/>umcu_hpc.config \
+nextflow run </path/to/>Epi2Me_wf-human-variation \
+    -c </path/to/>Epi2Me_wf-human-variation/umcu_hpc.config \
     --bam '</path/to/>.sort.bam' \
     --ref '</path/to/>.fna' \
     --sample_name '<sample_name>' \
