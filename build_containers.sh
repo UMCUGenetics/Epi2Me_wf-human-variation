@@ -9,11 +9,11 @@ e2l_base_tag="sha2b856c1f358ddf1576217a336bc0e9864b6dc0ed"
 e2l_snp_tag="sha17e686336bf6305f9c90b36bc52ff9dd1fa73ee9"
 e2l_sv_tag="shac591518dd32ecc3936666c95ff08f6d7474e9728"
 e2l_mod_tag="sha0253e9e9ba92aacc852ba376edefe8ff0932f71a"
-cnv_tag="sha428cb19e51370020ccf29ec2af4eead44c6a17c2"
-str_tag="shaa2f49ce57886426516eadd4048b6fdf9c22c7437"
-spectre_tag="sha5a2890023dc7a7899f47585103b4f5762fb9d1b3"
-snpeff_tag="sha313729d816872d70b410752001a0e2654eb88807"
-common_sha="sha338caea0a2532dc0ea8f46638ccc322bb8f9af48"
+cnv_tag="shae137452eb41f5f12b790774cafe15bc97f48d4d0"
+str_tag="shadd2f2963fe39351d4e0d6fa3ca54e1064c6ec057"
+spectre_tag="sha49a9fe474da9860f84f08f17f137b47a010b1834"
+snpeff_tag="shadcc812849019640d4d2939703fbb8777256e41ad"
+common_sha="sha8b5843d549bb210558cbb676fe537a153ce771d6"
 
 # Nextflow singularity cache directory
 cd /hpc/diaggen/software/singularity_cache
