@@ -2,9 +2,12 @@
 
 This repository is a fork of the ONT epi2me-labs wf-human-variation workflow. It contains UMCU specific changes to be able to run the wf-human-variation workflow on the UMCU compute environment.
 
-## Build containers
+## Build containers, install OpenJDK and Nextflow
 
-Before running the wf-human-variation workflow make sure that the required containers are build on the HPC using `build_containers.sh`. Make sure that the `tags` match the `tags` in nextflow.config.
+Before running install.sh, make sure that the required containers are build on the HPC using `build_containers.sh`. Make sure that the `tags` match the `tags` in nextflow.config.
+```bash
+sh install.sh
+```
 
 ## Run wf-human-variation on UMCU HPC
 
