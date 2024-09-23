@@ -45,7 +45,7 @@ $workflow_path/tools/nextflow/nextflow run $workflow_path \
     --bam_min_coverage 1 \
     --annotation false \
     -profile slurm \
-    -resume \
+    -resume -ansi-log false \
     ${optional_params[@]:-""}
 
 if [ \$? -eq 0 ]; then
