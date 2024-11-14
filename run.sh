@@ -42,7 +42,7 @@ $workflow_path/tools/nextflow/nextflow run $workflow_path \
     --str \
     --mod \
     --phased \
-    --bam_min_coverage 1 \
+    --bam_min_coverage 0 \
     --annotation false \
     -profile slurm \
     -resume -ansi-log false \
