@@ -1,8 +1,63 @@
+# UMCU
+
+This repository is a fork of the ONT epi2me-labs wf-human-variation workflow. It contains UMCU specific changes to be able to run the wf-human-variation workflow on the UMCU compute environment.
+
+## Run wf-human-variation on UMCU HPC
+
+Modify the following sbatch script to run the wf-human-variation workflow on the UMCU HPC. Make sure to replace all the placeholders indicated by `<>`.
+
+```bash
+#!/bin/bash
+#SBATCH -c 2
+#SBATCH -t 48:00:00
+#SBATCH --mem=20G
+#SBATCH --gres=tmpspace:20G
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=<email>
+#SBATCH --error=slurm-%j.err
+#SBATCH --output=slurm-%j.out
+
+export NXF_JAVA_HOME='/hpc/diaggen/software/tools/jdk-18.0.2.1/'
+
+nextflow run </path/to/>wf-human-variation \
+    -c </path/to/>umcu_hpc.config \
+    --bam '</path/to/>.sort.bam' \
+    --ref '</path/to/>.fna' \
+    --sample_name '<sample_name>' \
+    --out_dir '</path/to/out_dir>' \
+    --snp \
+    --cnv \
+    --sv \
+    --str \
+    --mod \
+    --phased \
+    --GVCF \
+    --bam_min_coverage 1 \
+    --annotation false \
+    -profile slurm \
+    -resume
+```
+
+## Update tags
+
+By default tags/releases are not synced with forks. The following commands will fetch the tags from upstream and push them to the fork repository.
+
+```bash
+# Clone repo and add upstream
+git clone git@github.com:UMCUGenetics/Epi2Me_wf-human-variation.git
+cd Epi2Me_wf-human-variation
+git remote add upstream git@github.com:epi2me-labs/wf-human-variation.git
+
+# Update tags:
+git fetch upstream
+git rebase upstream/master
+git push
+git push --tags
+```
+
 # Human variation workflow
 
 SNV, SV and CNV calling, modified base calling, and STR genotyping of human samples.
-
-
 
 ## Introduction
 
@@ -10,11 +65,11 @@ This repository contains a [nextflow](https://www.nextflow.io/) workflow
 for analysing variation in human genomic data. Specifically this workflow can
 perform the following:
 
-* diploid variant calling
-* structural variant calling
-* analysis of modified base calls
-* copy number variant calling
-* short tandem repeat (STR) expansion genotyping
+-   diploid variant calling
+-   structural variant calling
+-   analysis of modified base calls
+-   copy number variant calling
+-   short tandem repeat (STR) expansion genotyping
 
 The wf-human-variation workflow consolidates the small variant calling from the previous wf-human-snp, structural variant calling from wf-human-sv, CNV calling from wf-cnv (all of which are now deprecated), as well as performing STR expansion genotyping.
 This pipeline performs the steps of the four pipelines simultaneously and the results are generated and output in the same
@@ -22,27 +77,21 @@ way as they would have been had the pipelines been run separately.
 
 Please note, the tools embedded in individual sub-workflows within wf-human-variation are intended for use with 20x whole-genome Oxford Nanopore Technologies sequencing data (with the exception of QDNAseq, please see [this section](#6b-copy-number-variants-cnv-calling-with-qdnaseq) for more information). Usage outside of this (e.g. with adaptive sampling data, or using lower coverage inputs) may cause the workflow to terminate with an error, or produce unexpected results.
 
-
-
-
 ## Compute requirements
 
 Recommended requirements:
 
-+ CPUs = 32
-+ Memory = 128GB
+-   CPUs = 32
+-   Memory = 128GB
 
 Minimum requirements:
 
-+ CPUs = 16
-+ Memory = 32GB
+-   CPUs = 16
+-   Memory = 32GB
 
 Approximate run time: Variable depending on whether it is targeted sequencing or whole genome sequencing, as well as coverage and the individual analyses requested. For instance, a 90X human sample run (options: `--snp --sv --mod --str --cnv --phased --sex male`) takes less than 8h with recommended resources.
 
 ARM processor support: False
-
-
-
 
 ## Install and run
 
@@ -109,42 +158,36 @@ For further information about running a workflow on
 the command line see https://labs.epi2me.io/wfquickstart/
 
 
-
-
 ## Related protocols
 
 This workflow is designed to take input sequences that have been produced from [Oxford Nanopore Technologies](https://nanoporetech.com/) devices.
 
 Find related protocols in the [Nanopore community](https://community.nanoporetech.com/docs/).
 
-
-
 ## Input example
 
 <!---Example of input directory structure, delete and edit as appropriate per workflow.--->
+
 The `--bam` input parameter for this workflow accepts a path to a single BAM file, or a folder containing multiple BAM files for the sample. A sample name can be supplied with `--sample`.
 
 ```
-(i)                     (ii)    
+(i)                     (ii)
 input_reads.bam     ─── input_directory
                         ├── reads0.bam
                         └── reads1.bam
 ```
 
-
-
 ## Input parameters
 
 ### Workflow Options
 
-| Nextflow parameter name  | Type | Description | Help | Default |
-|--------------------------|------|-------------|------|---------|
-| sv | boolean | Call for structural variants. | If this option is selected, structural variant calling will be carried out using Sniffles2. | False |
-| snp | boolean | Call for small variants | If this option is selected, small variant calling will be carried out using Clair3. | False |
-| cnv | boolean | Call for copy number variants. | If this option is selected, copy number variant calling will be carried out with either Spectre (default) or QDNAseq. To use QDNAseq instead of Spectre, use the option `--use_qdnaseq`. Spectre is only compatible with genome build hg38, and if QDNAseq is used, it is only compatible with genome builds hg37 and hg38. | False |
-| str | boolean | Enable Straglr to genotype STR expansions. | If this option is selected, genotyping of STR expansions will be carried out using Straglr. This sub-workflow is only compatible with genome build hg38. | False |
-| mod | boolean | Enable output of modified calls to a bedMethyl file [requires input BAM with Ml and Mm tags] | This option is automatically selected and aggregation of modified calls with be carried out using modkit if Ml and Mm tags are found. Disable this option to prevent output of a bedMethyl file. | False |
-
+| Nextflow parameter name | Type    | Description                                                                                  | Help                                                                                                                                                                                                                                                                                                                        | Default |
+| ----------------------- | ------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| sv                      | boolean | Call for structural variants.                                                                | If this option is selected, structural variant calling will be carried out using Sniffles2.                                                                                                                                                                                                                                 | False   |
+| snp                     | boolean | Call for small variants                                                                      | If this option is selected, small variant calling will be carried out using Clair3.                                                                                                                                                                                                                                         | False   |
+| cnv                     | boolean | Call for copy number variants.                                                               | If this option is selected, copy number variant calling will be carried out with either Spectre (default) or QDNAseq. To use QDNAseq instead of Spectre, use the option `--use_qdnaseq`. Spectre is only compatible with genome build hg38, and if QDNAseq is used, it is only compatible with genome builds hg37 and hg38. | False   |
+| str                     | boolean | Enable Straglr to genotype STR expansions.                                                   | If this option is selected, genotyping of STR expansions will be carried out using Straglr. This sub-workflow is only compatible with genome build hg38.                                                                                                                                                                    | False   |
+| mod                     | boolean | Enable output of modified calls to a bedMethyl file [requires input BAM with Ml and Mm tags] | This option is automatically selected and aggregation of modified calls with be carried out using modkit if Ml and Mm tags are found. Disable this option to prevent output of a bedMethyl file.                                                                                                                            | False   |
 
 ### Main options
 
@@ -163,27 +206,36 @@ input_reads.bam     ─── input_directory
 | out_dir | string | Directory for output of all workflow results. |  | output |
 
 
+### Structural variant calling options
+
+| Nextflow parameter name | Type   | Description                                                                   | Help                                                                                                                                                                                                                                                       | Default |
+| ----------------------- | ------ | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| tr_bed                  | string | Input BED file containing tandem repeat annotations for the reference genome. | Providing a tandem repeat BED can improve calling in repetitive regions. An appropriate tandem repeat BED can be downloaded for your reference genome [from the Sniffles2 repository](https://github.com/fritzsedlazeck/Sniffles/tree/master/annotations). |         |
+
+### Structural variant benchmarking options
+
+| Nextflow parameter name | Type    | Description                           | Help                                                                                                              | Default |
+| ----------------------- | ------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------- |
+| sv_benchmark            | boolean | Benchmark called structural variants. | If this option is selected, automated benchmarking of structural variant calls will be carried out using Truvari. | False   |
+
 ### Copy number variant calling options
 
-| Nextflow parameter name  | Type | Description | Help | Default |
-|--------------------------|------|-------------|------|---------|
-| use_qdnaseq | boolean | Use QDNAseq for CNV calling. | Set this to true to use QDNASeq for CNV calling instead of Spectre. QDNAseq is better suited to shorter reads such as those generated from adaptive sampling experiments. | False |
-| qdnaseq_bin_size | integer | Bin size for QDNAseq in kbp. | Pre-computed bin annotations are available for a range of bin sizes. Larger sizes reduce noise, however this may result in reduced sensitivity. | 500 |
-
+| Nextflow parameter name | Type    | Description                  | Help                                                                                                                                                                      | Default |
+| ----------------------- | ------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| use_qdnaseq             | boolean | Use QDNAseq for CNV calling. | Set this to true to use QDNASeq for CNV calling instead of Spectre. QDNAseq is better suited to shorter reads such as those generated from adaptive sampling experiments. | False   |
+| qdnaseq_bin_size        | integer | Bin size for QDNAseq in kbp. | Pre-computed bin annotations are available for a range of bin sizes. Larger sizes reduce noise, however this may result in reduced sensitivity.                           | 500     |
 
 ### Modified base calling options
 
-| Nextflow parameter name  | Type | Description | Help | Default |
-|--------------------------|------|-------------|------|---------|
-| force_strand | boolean | Require modkit to call strand-aware modifications. | By default strand calls are collapsed (strand reported as '.'). Enabling this will force stranding to be considered when calling modifications, creating one output per modification per strand and the report will be tabulated by both modification and strand. | False |
-
+| Nextflow parameter name | Type    | Description                                        | Help                                                                                                                                                                                                                                                              | Default |
+| ----------------------- | ------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| force_strand            | boolean | Require modkit to call strand-aware modifications. | By default strand calls are collapsed (strand reported as '.'). Enabling this will force stranding to be considered when calling modifications, creating one output per modification per strand and the report will be tabulated by both modification and strand. | False   |
 
 ### Short tandem repeat expansion genotyping options
 
-| Nextflow parameter name  | Type | Description | Help | Default |
-|--------------------------|------|-------------|------|---------|
-| sex | string | Sex (XX or XY) to be passed to Straglr-genotype. | The sex determines how many calls will be obtained for all repeats on chrX. If not specified, the workflow will naively attempt to infer whether the sample carries XX or XY based on relative coverage of the allosomes. |  |
-
+| Nextflow parameter name | Type   | Description                                      | Help                                                                                                                                                                                                                      | Default |
+| ----------------------- | ------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| sex                     | string | Sex (XX or XY) to be passed to Straglr-genotype. | The sex determines how many calls will be obtained for all repeats on chrX. If not specified, the workflow will naively attempt to infer whether the sample carries XX or XY based on relative coverage of the allosomes. |         |
 
 ### Advanced Options
 
@@ -202,18 +254,13 @@ input_reads.bam     ─── input_directory
 
 ### Multiprocessing Options
 
-| Nextflow parameter name  | Type | Description | Help | Default |
-|--------------------------|------|-------------|------|---------|
-| threads | integer | Set max number of threads to use for more intense processes (limited by config executor cpus) |  | 4 |
-| ubam_map_threads | integer | Set max number of threads to use for aligning reads from uBAM (limited by config executor cpus) |  | 8 |
-| ubam_sort_threads | integer | Set max number of threads to use for sorting and indexing aligned reads from uBAM (limited by config executor cpus) |  | 3 |
-| ubam_bam2fq_threads | integer | Set max number of threads to use for uncompressing uBAM and generating FASTQ for alignment (limited by config executor cpus) |  | 1 |
-| modkit_threads | integer | Total number of threads to use in modkit modified base calling (limited by config executor cpus) |  | 4 |
-
-
-
-
-
+| Nextflow parameter name | Type    | Description                                                                                                                  | Help | Default |
+| ----------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- | ---- | ------- |
+| threads                 | integer | Set max number of threads to use for more intense processes (limited by config executor cpus)                                |      | 4       |
+| ubam_map_threads        | integer | Set max number of threads to use for aligning reads from uBAM (limited by config executor cpus)                              |      | 8       |
+| ubam_sort_threads       | integer | Set max number of threads to use for sorting and indexing aligned reads from uBAM (limited by config executor cpus)          |      | 3       |
+| ubam_bam2fq_threads     | integer | Set max number of threads to use for uncompressing uBAM and generating FASTQ for alignment (limited by config executor cpus) |      | 1       |
+| modkit_threads          | integer | Total number of threads to use in modkit modified base calling (limited by config executor cpus)                             |      | 4       |
 
 ## Outputs
 
@@ -269,6 +316,7 @@ Subworkflows where the relevant option is omitted will not be run.
 ### 1. Input and data preparation
 
 The workflow relies on two primary input files:
+
 1. A reference genome in [FASTA format](https://www.ncbi.nlm.nih.gov/genbank/fastaformat/)
 2. Sequencing data for the sample in the form of a single [BAM file](https://samtools.github.io/hts-specs/SAMv1.pdf) or a folder of BAM files, either aligned or unaligned.
 
@@ -277,7 +325,9 @@ When analysing human data, we recommend using [human_g1k_v37.fasta.gz](https://o
 The input BAM file can be generated using the [wf-basecalling](https://github.com/epi2me-labs/wf-basecalling/) workflow, which is up to date with the current dorado releases and models.
 
 ### 2. Data QC and pre-processing
+
 The workflow starts by performing multiple checks of the input BAM file, as well as computing:
+
 1. depth of sequencing with [mosdepth](https://github.com/brentp/mosdepth);
 2. read alignment statistics with [fastcat](https://github.com/epi2me-labs/fastcat).
 
@@ -305,7 +355,7 @@ SVs can be phased using `--phased`. However, this will cause the workflow to run
 
 ### 5. Modified base calling with modkit
 
-Modified base calling can be performed by specifying `--mod`. The workflow will call modified bases using [modkit](https://github.com/nanoporetech/modkit). 
+Modified base calling can be performed by specifying `--mod`. The workflow will call modified bases using [modkit](https://github.com/nanoporetech/modkit).
 The workflow will automatically check whether the files contain the appropriate `MM`/`ML` tags, required for running [modkit pileup](https://nanoporetech.github.io/modkit/intro_bedmethyl.html). If the tags are not found, the workflow will not run the individual analysis, but will still run the other subworkflows requested by the user.
 The default behaviour of the workflow is to run modkit with the `--cpg --combine-strands` options set. It is possible to report strand-aware modifications by providing `--force_strand`, which will trigger modkit to run in default mode. The resulting bedMethyl will include modifications for each site on each strand separately.
 The modkit run can be fully customized by providing `--modkit_args`. This will override any preset, and allow full control over the run of modkit.
@@ -328,42 +378,42 @@ Please be aware that incorrect sex assignment will result in the wrong number of
 In addition to a gzipped VCF file containing STRs found in the dataset, the workflow emits a TSV straglr output containing reads spanning STRs, and a haplotagged BAM.
 
 ### 8. Phasing variants
+
 Variant phasing is switched on simply using the `--phased` option.
 By default, the workflow uses [whatshap](https://whatshap.readthedocs.io/) to perform phasing of the variants, with the option to use [longphase](https://github.com/twolinin/longphase) instead by setting `--use_longphase true`.
 The workflow will automatically turn on the necessary phasing processes based on the selected subworkflows.
 The behaviour of the phasing is summarised in the below table:
 
 |         |        |         |            | Phased SNP VCF | Phased SV VCF | Phased bedMethyl |
-|---------|--------|---------|------------|----------------|---------------|------------------|
-| `--snp` | `--sv` | `--mod` | `--phased` |     &check;    |     &check;   |       &check;    |
-| `--snp` | `--sv` |         | `--phased` |     &check;    |     &check;   |                  |
-| `--snp` |        |         | `--phased` |     &check;    |               |                  |
-|         | `--sv` |         | `--phased` |                |     &check;   |                  |
-|         |        | `--mod` | `--phased` |                |               |       &check;    |
+| ------- | ------ | ------- | ---------- | -------------- | ------------- | ---------------- |
+| `--snp` | `--sv` | `--mod` | `--phased` | &check;        | &check;       | &check;          |
+| `--snp` | `--sv` |         | `--phased` | &check;        | &check;       |                  |
+| `--snp` |        |         | `--phased` | &check;        |               |                  |
+|         | `--sv` |         | `--phased` |                | &check;       |                  |
+|         |        | `--mod` | `--phased` |                |               | &check;          |
 
 Using `--GVCF` together with `--phased` will generate a phased GVCF, created by reflecting the phased genotype and the phase set annotation in the VCF file. This operation is performed using `bcftools annotate`, targeting the `GT` and `PS` fields.
 
 Running the phasing is a compute intensive process. Running the workflow in phasing mode doubles the runtime, and significantly increases the storage requirements to the order of terabytes.
 
 ### 9. Variant annotation
+
 Annotation will be performed automatically by the SNP and SV subworkflows, and can be disabled by the user with `--annotation false`. The workflow will annotate the variants using [SnpEff](https://pcingola.github.io/SnpEff/), and currently only support the human hg19 and hg38 genomes. Additionally, the workflow will add the [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/) annotations for the SNP variants.
 
 Running the workflow on non-human samples will require this option to be disabled. For more detail, see Section 10 below.
 
 ### 10. Genome compatibility and running the workflow on non-human genomes
+
 Some of the sub-workflows in wf-human-variation are restricted to certain genome builds, which means they will not be executable on non-human genomes or human genome builds outside hg19/GRCh37 and hg38/GRCh38. The following table summarises which subworkflows and options are available (or required) for a desired input genome:
 
-|    Genome    | `--snp`  | `--sv`  | `--mod` | `--cnv` | `--cnv --use_qdnaseq` | `--str` | `--annotation false` | `--include_all_ctgs` |
-|--------------|----------|---------|---------|---------|-----------------------|---------|----------------------|----------------------|
-| hg19/GRCh37  | &check;  | &check; | &check; |         |        &check;        |         |         \*           |                      |
-| hg38/GRCh38  | &check;  | &check; | &check; | &check; |        &check;        | &check; |         \*           |                      |
-| Other human  | &check;  | &check; | &check; |         |                       |         |       &check;        |                      |
-| Non human    | &check;  | &check; | &check; |         |                       |         |       &check;        |       &check;        |
+| Genome      | `--snp` | `--sv`  | `--mod` | `--cnv` | `--cnv --use_qdnaseq` | `--str` | `--annotation false` | `--include_all_ctgs` |
+| ----------- | ------- | ------- | ------- | ------- | --------------------- | ------- | -------------------- | -------------------- |
+| hg19/GRCh37 | &check; | &check; | &check; |         | &check;               |         | \*                   |                      |
+| hg38/GRCh38 | &check; | &check; | &check; | &check; | &check;               | &check; | \*                   |                      |
+| Other human | &check; | &check; | &check; |         |                       |         | &check;              |                      |
+| Non human   | &check; | &check; | &check; |         |                       |         | &check;              | &check;              |
 
 \* As noted above, annotation is performed by default but can be switched off for hg19/GRCh37 and hg38/GRCh38.
-
-
-
 
 ## Troubleshooting
 
@@ -380,8 +430,6 @@ output VCF).
 + The workflow expects either an uncompressed or [`bgzip`](https://www.htslib.org/doc/bgzip.html)-compressed reference. If the user provides a reference compressed not with `bgzip`, the workflow will run to completion, but won't be able to generate the necessary indexes to visualize the outputs in IGV.
 
 
-
-
 ## FAQ's
 
 If your question is not answered here, please report any issues or suggestions on the [github issues](https://github.com/epi2me-labs/wf-template/issues) page or start a discussion on the [community](https://community.nanoporetech.com/). 
@@ -392,12 +440,9 @@ If your question is not answered here, please report any issues or suggestions o
 
 ## Related blog posts
 
-+ [Importing third-party workflows into EPI2ME Labs](https://labs.epi2me.io/nexflow-for-epi2melabs/)
-+ [blogpost](https://labs.epi2me.io/copy-number-calling/) and [CNV workflow documentation](https://github.com/epi2me-labs/wf-cnv) for more information on running the copy number calling subworkflow.
-+ [blogpost](https://labs.epi2me.io/human-targeted-analysis/) on how to run a targeted BRCA Gene Analysis with `wf-human-variation`
-+ [blogpost](https://labs.epi2me.io/giab-2023.05/) on the generation of four Genome in a Bottle samples processed with `wf-human-variation`
+-   [Importing third-party workflows into EPI2ME Labs](https://labs.epi2me.io/nexflow-for-epi2melabs/)
+-   [blogpost](https://labs.epi2me.io/copy-number-calling/) and [CNV workflow documentation](https://github.com/epi2me-labs/wf-cnv) for more information on running the copy number calling subworkflow.
+-   [blogpost](https://labs.epi2me.io/human-targeted-analysis/) on how to run a targeted BRCA Gene Analysis with `wf-human-variation`
+-   [blogpost](https://labs.epi2me.io/giab-2023.05/) on the generation of four Genome in a Bottle samples processed with `wf-human-variation`
 
 See the [EPI2ME website](https://labs.epi2me.io/) for lots of other resources and blog posts.
-
-
-
