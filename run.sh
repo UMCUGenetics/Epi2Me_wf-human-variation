@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-workflow_path='/hpc/diaggen/software/production/Epi2Me_wf-human-variation'
+workflow_path='/hpc/diaggen/software/development/Epi2Me_wf-human-variation_feature_umcu_v260'
 
 # Set input and output dirs
 input=`realpath -e $1`
@@ -25,8 +25,8 @@ sbatch <<EOT
 #SBATCH --gres=tmpspace:20G
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=$email
-#SBATCH --error=slurm-%j.err
-#SBATCH --output=slurm-%j.out
+#SBATCH --error=log/slurm-%j.err
+#SBATCH --output=log/slurm-%j.out
 
 export NXF_JAVA_HOME='$workflow_path/tools/java/jdk'
 
