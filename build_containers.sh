@@ -5,14 +5,15 @@
 #SBATCH --gres=tmpspace:100G
 
 # Tags from nextflow.config
-e2l_base_tag="sha2b856c1f358ddf1576217a336bc0e9864b6dc0ed"
-e2l_snp_tag="sha17e686336bf6305f9c90b36bc52ff9dd1fa73ee9"
-e2l_sv_tag="shac591518dd32ecc3936666c95ff08f6d7474e9728"
-e2l_mod_tag="shaa7bf2b62946eeb7646b9b9d60b892edfc3b3a52c"
+e2l_base_tag="sha8ecee6d351b0c2609b452f3a368c390587f6662d"
+e2l_snp_tag="sha8cc7e88ff71bf593d7852309a31d3adb29a7caeb"
+e2l_sv_tag="sha8134f9fef5e19605c7fb4c1348961d6771f1af79"
+e2l_mod_tag="shaa7bf2b62946eeb7646b9b9d60b892edfc3b3a52c" 
 cnv_tag="sha428cb19e51370020ccf29ec2af4eead44c6a17c2"
 str_tag="shadd2f2963fe39351d4e0d6fa3ca54e1064c6ec057"
 spectre_tag="sha42472d37a5a992c3ee27894a23dce5e2fff66d27"
-snpeff_tag="shab01c188f11ca9ce53d186fe22111eeac52409523"
+snpeff_tag="shaff5aecfe85e945f49215fa3d43b9ed4ae352bd5c"
+#longphase_tag="sha4ff1cd9a6eee338a414082cb24f943bcc4ce8e7c"
 common_sha="shaabceef445fb63214073cbf5836fdd33c04be4ac7"
 
 # Nextflow singularity cache directory
