@@ -13,8 +13,7 @@ cnv_tag="sha428cb19e51370020ccf29ec2af4eead44c6a17c2"
 str_tag="shadd2f2963fe39351d4e0d6fa3ca54e1064c6ec057"
 spectre_tag="sha42472d37a5a992c3ee27894a23dce5e2fff66d27"
 snpeff_tag="shaff5aecfe85e945f49215fa3d43b9ed4ae352bd5c"
-#longphase_tag="sha4ff1cd9a6eee338a414082cb24f943bcc4ce8e7c"
-common_sha="shaabceef445fb63214073cbf5836fdd33c04be4ac7"
+common_sha="sha72f3517dd994984e0e2da0b97cb3f23f8540be4b"
 
 # Nextflow singularity cache directory
 cd /hpc/diaggen/software/singularity_cache
