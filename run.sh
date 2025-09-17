@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-workflow_path='/hpc/diaggen/software/development/Epi2Me_wf-human-variation_feature_umcu_v260'
+workflow_path='/hpc/diaggen/software/development/Epi2Me_wf-human-variation_feature_umcu_v272'
 
 # Set input and output dirs
 input=`realpath -e $1`
