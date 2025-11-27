@@ -36,6 +36,7 @@ $workflow_path/tools/nextflow/nextflow run $workflow_path \
     --ref $reference_path \
     --sample_name $sampleid \
     --out_dir $output \
+    --output_xam_fmt bam \
     --snp \
     --cnv \
     --sv \
