@@ -1,15 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-workflow_path='/hpc/diaggen/software/development/Epi2Me_wf-human-variation_feature_umcu_v272'
+workflow_path='/hpc/diaggen/users/Martin/Epi2Me_wf-human-variation_feature_umcu_settings_v272_suffix'
 
 # Set input and output dirs
 input=`realpath -e $1`
 output=`realpath $2`
 reference_path=$3
 sampleid=$4
-email=$5
-optional_params=( "${@:6}" )
+suffix=$5
+email=$6
+optional_params=( "${@:7}" )
 
 mkdir -p $output && cd $output
 mkdir -p log
@@ -36,6 +37,8 @@ $workflow_path/tools/nextflow/nextflow run $workflow_path \
     --ref $reference_path \
     --sample_name $sampleid \
     --out_dir $output \
+    --output_xam_fmt bam \
+    --suffix $suffix \
     --snp \
     --cnv \
     --sv \
