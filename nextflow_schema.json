@@ -313,6 +313,13 @@
                             "default": "fabric"
                         }
                     }
+                },
+                "suffix": {
+                    "title": "suffix to be added to output filenaming of all files containing sample_name",
+                    "type": "string",
+                    "description": "Additional suffix to be added to file naming for all files containing sample_name",
+                    "hidden": false,
+                    "help_text": "String to be added to VCF file naming between sample_name and extension."
                 }
             },
             "required": [
