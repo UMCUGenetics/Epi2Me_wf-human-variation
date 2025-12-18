@@ -1,15 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-workflow_path='/hpc/diaggen/users/Martin/Epi2Me_wf-human-variation_feature_umcu_settings_v272_suffix'
+workflow_path='/hpc/diaggen/software/development/Epi2Me_wf-human-variation_feature_umcu_v272suffix'
 
 # Set input and output dirs
 input=`realpath -e $1`
 output=`realpath $2`
 reference_path=$3
 sampleid=$4
-suffix=$5
-email=$6
+email=$5
+suffix=$6
 optional_params=( "${@:7}" )
 
 mkdir -p $output && cd $output
