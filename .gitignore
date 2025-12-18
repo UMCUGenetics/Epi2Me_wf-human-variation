@@ -1,6 +1,7 @@
 nextflow
 .nextflow*
 template-workflow
+tools
 .*.swp
 .*.swo
 *.pyc
