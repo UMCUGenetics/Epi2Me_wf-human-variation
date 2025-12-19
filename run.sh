@@ -9,8 +9,8 @@ output=`realpath $2`
 reference_path=$3
 sampleid=$4
 email=$5
-suffix=$6
-optional_params=( "${@:7}" )
+#suffix=$6
+optional_params=( "${@:6}" )
 
 mkdir -p $output && cd $output
 mkdir -p log
@@ -38,7 +38,6 @@ $workflow_path/tools/nextflow/nextflow run $workflow_path \
     --sample_name $sampleid \
     --out_dir $output \
     --output_xam_fmt bam \
-    --suffix $suffix \
     --snp \
     --cnv \
     --sv \
@@ -59,6 +58,19 @@ if [ \$? -eq 0 ]; then
 
     echo "Remove work directory"
     rm -r work
+
+    if [[ -d "${input}\${sampleid}\" ]]; then
+        echo "Copying raw data reports"
+        mkdir -p $output\raw_data_report\
+        rsync -rahuL --exclude '*.bam' \
+            --exclude '*.bai' \
+            --exclude '*.fastq.gz' \
+            --exclude '*.pod5' \
+            ${input}\${sampleid}\ \
+            $output\raw_data_report\
+    else
+        echo 'Sample_name folder not detected in raw data folder. No reports copied"
+    fi
 
     echo "Creating md5sum"
     find -type f -not -iname 'md5sum.txt' -exec md5sum {} \; > md5sum.txt
